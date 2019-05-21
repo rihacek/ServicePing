@@ -1,3 +1,0 @@
-servicesDB = ""
-dbUser = ""
-dbPassword = ""
