@@ -1,13 +1,25 @@
 import subprocess
-import secrets
+import os
+import re
+from secrets import MySQL
+import pymysql
 
-for ping in range(1,3):
-    address = "127.0.0." + str(ping)
-    res = subprocess.call(['ping', address])
-    if res == 0:
-        print("ping to", address, "OK")
-    elif res == 2:
-        print("no response from", address)
-    else:
-        print("ping to", address, "failed!")
+pingParam = '-n' if os.name == 'nt' else '-c'
+
+#go to db to get system info:
+#systemid, method (ping, http), address
+#"ping" each of them
+#upload the responses
+
+#todo: done for now because i don't remember my sql credentials :D 
+
+for service in ["www.google.com","127.0.0.2"]:
+    try:
+        res = subprocess.check_output(['ping', pingParam, '1', service])
+        ms = re.search('Average = (.*)ms', res.decode('utf-8'))
+        print(service + ": " + ms.group(1) + "ms")
+    except subprocess.CalledProcessError as e:
+        #do failed ping stuff
+        print(service + ": No response.")
+
 
