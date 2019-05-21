@@ -1,6 +1,7 @@
 import subprocess
+import secrets
 
-for ping in range(1,10):
+for ping in range(1,3):
     address = "127.0.0." + str(ping)
     res = subprocess.call(['ping', address])
     if res == 0:
@@ -9,3 +10,4 @@ for ping in range(1,10):
         print("no response from", address)
     else:
         print("ping to", address, "failed!")
+
