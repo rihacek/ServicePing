@@ -6,12 +6,10 @@ import pymysql
 
 pingParam = '-n' if os.name == 'nt' else '-c'
 
-#go to db to get system info:
+#call web page to get system info:
 #systemid, method (ping, http), address
 #"ping" each of them
-#upload the responses
-
-#todo: done for now because i don't remember my sql credentials :D 
+#upload the responses via web page
 
 for service in ["www.google.com","127.0.0.2"]:
     try:
