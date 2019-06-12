@@ -1,4 +1,4 @@
-import subprocess, os, re, json, urllib.request, secrets
+import subprocess, os, re, json, urllib.request, secrets, datetime
 
 #call web page to get system info:
 urlString = "https://uptime.rihaceks.com/ping/list/" + secrets.pinglist
@@ -12,25 +12,33 @@ jsonList = json.loads(listData.decode(encoding))
 
 #"ping" each system in the response
 pingParam = '-n' if os.name == 'nt' else '-c' #account for different ping parameters in Windows/Linux
+
+junkpassword = secrets.pinglist
+
 for system in jsonList["systems"]:
+    #password to post, systemid, statusid, calltime,[ and duration]
+
+    thisSystem = system["systemID"]
+    thisTime = datetime.now() #might have to format this later
     try:
         res = subprocess.check_output(['ping', pingParam, '1', system["address"]])
-        #ms = re.search('Average = (.*)ms', res.decode('utf-8'))
-        #print(system["systemName"] + ": " + ms.group(1) + "ms")
-        failures = ['Received = 0','TTL expired in transit']
+        failures = ['Received = 0', 'TTL expired in transit', 'host unreachable']
         if any(x in res.decode('utf-8') for x in failures):
-            #do failed ping stuff
-            print(system["systemName"],"failed ping:",system["address"])
+            raise Exception
         else:
-            #do successful ping stuff
             ms = re.search('Average = (.*)ms', res.decode('utf-8'))
             print(system["systemName"] + ": " + ms.group(1) + "ms")
-
-        #upload the data via POST
-
-    except subprocess.CalledProcessError as e:
-        #do error logging stuff
+            
+            thisStatus = '5'   #5=ok, 6=fail:static is fine for now
+            thisDuration = ms.group(1)
+        
+    except subprocess.CalledProcessError as e:        
         print(system["systemName"] + ": todo - log this error.")
+        thisStatus = '6'
+
+    #do our post here like so
+    # $postParams = @{once='thisone';twice='thatone'}
+    # curl http://127.0.0.1:5000/responses/1 -Method POST -Body $postParams
 
 
 
