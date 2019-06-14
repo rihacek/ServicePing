@@ -3,7 +3,8 @@ from datetime import datetime
 import requests #todo: ditch urllib stuff
 
 #call web page to get system info:
-url = "https://uptime.rihaceks.com"
+url = "http://127.0.0.1:5000" #debugging
+#url = "https://uptime.rihaceks.com"
 pingString = url + "/ping/list/" + secrets.pinglist
 webCall = urllib.request.urlopen(pingString)
 listData = webCall.read()
@@ -39,9 +40,8 @@ for system in jsonList["systems"]:
                 'st' : thisStatus,
                 'time' : thisTime,
                 'dur' : thisDuration } 
-    url = "http://127.0.0.1:5000" #debugging
+    
     postURL = url + "/responses/" + str(thisSystem)
     res = requests.post(postURL, data=payload)
     
-    print(res.text)
-    print('* * * * * *')
+    print('***',res.text,'***')
